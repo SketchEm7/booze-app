@@ -1,0 +1,147 @@
+<html>
+	<head>
+		<script src="jquery.js"></script>
+		<meta name="viewport" content="width=device-width">
+		<style type="text/css">
+			body{
+				transition: left 0.5s;
+			}
+			@media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
+  				body {
+    				font-size: 110%;
+    				width: 100%;
+    				height: 100%;
+
+  				}
+  				
+			}
+
+			#gallery{
+				width: 500px;
+				height: 750px;
+				margin: 0 auto;
+				text-align: center;
+			}
+			.boozeName {
+				font-size: 48px;
+				font-family: Arial;
+				font-weight: lighter;
+ 			 	color: #719486;
+			}
+
+			.boozeCountry {
+				font-size: 48px;
+				font-family: Arial;
+				font-weight: lighter;
+ 			 	color: #719486;
+			}
+			#booze{
+				-webkit-border-radius: 0;
+  				-moz-border-radius: 0;
+  				font-family: Arial;
+ 			 	color: #719486;
+  				font-size: 20px;
+  				background: #ffffff;
+  				padding: 10px 20px 10px 20px;
+  				border: solid #719486 9px;
+  				text-decoration: none;
+  				margin: 0 auto;
+  				margin-top: 30px;
+			}
+			h1{
+				font-family: Arial;
+				font-weight: lighter;
+ 			 	color: #719486;
+ 			 	font-size: 36px;
+ 			 	margin-top: 36px;
+			}
+			#description{
+				font-family: Arial;
+				font-weight: lighter;
+ 			 	color: #719486;
+ 			 	text-align: center;
+ 			 	width: 500px;
+			}
+			.info{
+				font-family: Arial;
+				font-weight: lighter;
+ 			 	color: #719486;
+			}
+			.boozePercent{
+				font-family: Arial;
+				font-weight: lighter;
+			}
+			#booze_box{
+				padding-left: 4px;
+				padding-right: 4px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="container">
+			<div id="gallery">
+				<div id="booze_box">
+					<h1>Booze From Abroad</h1>
+					<p id ="description">If you are tired of the same old same old in your drinking then maybe it's time you explored a little. This app has a list of 30 different alcoholic beverages each of which is of national recognition from a different country or region in the world. Please keep in mind this app is not meant to discourage the consumption of domestically brewed alcohol. A good drink is a good drink weather it's 5 miles or 500 miles away. This is only meant to help you expand your drinking adventures by introducing drinks that you may have never heard of before and perhaps learn something new in terms of world culture. Hit the booze and let's see what region of the world your tastebuds should visit. </p>
+				</div>
+				<div class="info"></div>
+				<button id="booze">BOOZE</button>
+			</div>
+		</div>
+		<script>
+			// Load the alcohol data from the booze.csv file
+			$.get("booze.csv", function(data) {
+				var alcohols = [];
+
+				var highestPercent = 0;
+
+				var lines = data.split("\n"); // split data (the entire file) into individual lines
+
+				for(var i = 1; i < lines.length; i++) {
+					var lineData = lines[i].split(","); // split this line around commas to get data (CSV)
+
+					// Build an object to contain all our data
+					var currentAlcohol = {
+						"name": lineData[0],
+						"country": lineData[1],
+						"percentAlcohol": parseFloat(lineData[2]),
+						"type": lineData[3],
+						"image": lineData[4],
+						"info": lineData.splice(5, lineData.length - 5).join(",")
+					};
+
+					// Figure out what the highest percentage of alcohol is
+					if(currentAlcohol.percentAlcohol > highestPercent) {
+						highestPercent = currentAlcohol.percentAlcohol;
+					}
+
+					// Push that object onto our array of alcohols
+					alcohols.push(currentAlcohol);
+				}
+
+				// alcohols array is done being built! can be used now
+				
+
+
+				// show me a picture of an alcohol
+				$("#booze").click(function(){
+					var randomAlcoholIndex = Math.floor(Math.random() * alcohols.length);
+					$("#booze_box").html("");
+					$("#booze_box").append("<span class='boozeName'>" + alcohols[randomAlcoholIndex].name + "</span><br/>");
+					var boozePercent = $("#booze_box").append("<span class='boozePercent'>" + alcohols[randomAlcoholIndex].percentAlcohol + "% alcohol</span><br/>");
+					$("#booze_box").append("<span class='boozeCountry'>" + alcohols[randomAlcoholIndex].country + "</span><br/>");
+					$("#booze_box").append("<img class='boozeImg' src='" + alcohols[randomAlcoholIndex].image + "'/><br/>");
+					$("#booze_box").append("<span class='info'>" + alcohols[randomAlcoholIndex].info + "</span>");
+					$("#booze_box").show();
+
+					var paRatio = alcohols[randomAlcoholIndex].percentAlcohol / highestPercent;
+					boozePercent.css("color", "rgb(" + parseInt(255 * paRatio) + ",0," + parseInt(255 * (1-paRatio)) + ")");
+
+					console.log("rgb(" + 255 * paRatio + ",0," + 255 * (1-paRatio) + ")");
+				});
+			});
+		</script>
+	</body>
+</html>
+

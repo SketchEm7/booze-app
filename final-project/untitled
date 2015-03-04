@@ -1,0 +1,79 @@
+<html>
+	<head>
+		<script src="jquery.js"></script>
+		<style type="text/css">
+			#gallery{
+				width: 500px;
+				height: 700px;
+				margin: 0 auto;
+			}
+			#booze{
+				-webkit-border-radius: 0;
+  				-moz-border-radius: 0;
+  				font-family: Arial;
+ 			 	color: #719486;
+  				font-size: 20px;
+  				background: #ffffff;
+  				padding: 10px 20px 10px 20px;
+  				border: solid #719486 9px;
+  				text-decoration: none;
+  				margin: 0 auto;
+			}
+
+			.boozeName {
+				font-size: 22px;
+			}
+
+			.boozeCountry {
+
+			}
+			img{
+				margin: 0 auto;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="container">
+			<div id="gallery"></div>
+		</div>
+		<button id="booze" style="margin-left:250px;margin-top:-350px;">BOOZE</button>
+		<script>
+			// Load the alcohol data from the booze.csv file
+			$.get("booze.csv", function(data) {
+				var alcohols = [];
+
+				var lines = data.split("\n"); // split data (the entire file) into individual lines
+
+				for(var i = 1; i < lines.length; i++) {
+					var lineData = lines[i].split(","); // split this line around commas to get data (CSV)
+
+					// Build an object to contain all our data
+					var currentAlcohol = {
+						"name": lineData[0],
+						"country": lineData[1],
+						"percentAlcohol": parseFloat(lineData[2]) / 100,
+						"type": lineData[3],
+						"image": lineData[4]
+					};
+
+					// Push that object onto our array of alcohols
+					alcohols.push(currentAlcohol);
+				}
+
+				// alcohols array is done being built! can be used now
+				console.log(alcohols);
+
+
+				// show me a picture of an alcohol
+				$("#booze").click(function(){
+					var randomAlcoholIndex = Math.floor(Math.random() * alcohols.length);
+					$("#gallery").html("<img class='boozeImg' src='" + alcohols[randomAlcoholIndex].image + "'/>");
+					$("#gallery").append("<span class='boozeName'>" + alcohols[randomAlcoholIndex].name + "</span>");
+					$("#gallery").append("<span class='boozeCountry'>" + alcohols[randomAlcoholIndex].country + "</span>");
+					$("#gallery").show();
+				});
+			});
+		</script>
+	</body>
+</html>
